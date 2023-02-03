@@ -23,26 +23,16 @@ pipeline {
            agent any
            steps {
               script {
-                sh 'docker build -t ${votre_id_dockerhub}/${IMAGE_NAME}:${IMAGE_TAG} .'
+                sh 'docker build .'
               }
            }
-       }
-       stage('Run container based on builded image') {
-          agent any
-          steps {
-            script {
-              sh '''
-docker run -d -p 80:5000 -e PORT=5000 --name ${IMAGE_NAME} ${votre_id_dockerhub}/${IMAGE_NAME}:${IMAGE_TAG} 
-              '''
-             }
-          }
        }
        stage('Test image') {
            agent any
            steps {
               script {
                 sh '''
-curl http://172.17.0.1 | grep -q "Hello world!"
+curl http://172.17.0.1 | grep -q "Welcome"
                 '''
               }
            }
@@ -85,7 +75,7 @@ docker push ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
      }
      stage('PROD - Deploy app') {
        when {
-           expression { GIT_BRANCH == 'origin/main' }
+           expression { GIT_BRANCH == 'origin/master' }
        }
      agent any
 

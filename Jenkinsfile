@@ -27,6 +27,15 @@ pipeline {
               }
            }
        }
+       stage('Run container based on builded image') {
+          agent any
+          steps {
+            script {
+              sh '''
+docker run -d -p 80:5000 -e PORT=5000 --name ${IMAGE_NAME} ${IMAGE_NAME}:${IMAGE_TAG}              '''
+             }
+          }
+       }
        stage('Test image') {
            agent any
            steps {
